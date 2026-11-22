@@ -14,7 +14,7 @@ echo "=========================================="
 # Clean previous build artifacts if any
 lb clean --purge || true
 
-# Configure live-build explicitly for Debian on Ubuntu runner
+# Configure live-build explicitly for Debian on Ubuntu 24.04 runner
 lb config noauto \
   --mode debian \
   --architecture "$ARCH" \
@@ -35,7 +35,6 @@ lb config noauto \
   --iso-volume "$OS_NAME Live" \
   --memtest none \
   --debian-installer live \
-  --updates true \
   --security true
 
 # Build the ISO
