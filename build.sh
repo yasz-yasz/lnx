@@ -14,7 +14,7 @@ echo "=========================================="
 # Clean previous build artifacts if any
 lb clean --purge || true
 
-# Configure live-build explicitly for Debian on Ubuntu 24.04 runner
+# Configure live-build explicitly for Debian 12+ (bookworm/trixie) on Ubuntu 24.04 runner
 lb config noauto \
   --mode debian \
   --architecture "$ARCH" \
@@ -35,7 +35,17 @@ lb config noauto \
   --iso-volume "$OS_NAME Live" \
   --memtest none \
   --debian-installer live \
-  --security true
+  --security false
+
+# Configure proper Debian 12+ security repository format (<release>-security instead of <release>/updates)
+mkdir -p config/archives
+cat <<EOF > config/archives/security.list.chroot
+deb http://security.debian.org/debian-security ${DEBIAN_RELEASE}-security main contrib non-free non-free-firmware
+EOF
+
+cat <<EOF > config/archives/security.list.binary
+deb http://security.debian.org/debian-security ${DEBIAN_RELEASE}-security main contrib non-free non-free-firmware
+EOF
 
 # Build the ISO
 lb build
