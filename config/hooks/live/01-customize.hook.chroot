@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+echo "Running custom chroot hook..."
+
+# Set custom OS release info
+cat <<EOF > /etc/os-release
+PRETTY_NAME="Custom Linux OS 1.0"
+NAME="Custom Linux OS"
+VERSION_ID="1.0"
+VERSION="1.0 (Custom)"
+ID=customlinux
+ID_LIKE=debian
+HOME_URL="https://github.com/"
+EOF
+
+# Enable NetworkManager & LightDM
+systemctl enable NetworkManager || true
+systemctl enable lightdm || true
+
+# Clean apt cache to shrink ISO size
+apt-get clean
+rm -rf /var/lib/apt/lists/*
