@@ -1,0 +1,22 @@
+name: Ekstrak ZIP
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ekstrak dan Push
+        run: |
+          unzip -o cc.zip
+          rm cc.zip
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git commit -m "Ekstrak cc.zip"
+          git push
+          
