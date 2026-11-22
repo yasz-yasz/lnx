@@ -32,7 +32,7 @@ jobs:
       - name: Install Live-Build Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y live-build debootstrap squashfs-tools xorriso syslinux-utils isolinux
+          sudo apt-get install -y live-build debootstrap squashfs-tools xorriso syslinux-utils isolinux debian-archive-keyring
 
       - name: Make Scripts Executable
         run: |
@@ -69,3 +69,4 @@ jobs:
           tag_name: v${{ github.run_number }}
           name: Custom Linux ISO Build #${{ github.run_number }}
           files: release_output/*
+          
