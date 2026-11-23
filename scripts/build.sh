@@ -31,7 +31,6 @@ mkdir -p "${CHROOT_DIR}" "${ISO_DIR}/casper" "${ISO_DIR}/boot/grub" "${ISO_DIR}/
 debootstrap --arch=amd64 "${UBUNTU_RELEASE}" "${CHROOT_DIR}" http://archive.ubuntu.com/ubuntu/
 
 echo "[3/6] Menyiapkan lingkungan chroot..."
-cp /etc/resolv.conf "${CHROOT_DIR}/etc/resolv.conf"
 cp "${ROOT_DIR}/scripts/chroot-setup.sh" "${CHROOT_DIR}/tmp/chroot-setup.sh"
 cp "${ROOT_DIR}/config/win11-layout.sh" "${CHROOT_DIR}/tmp/win11-layout.sh"
 cp -r "${ROOT_DIR}/config/calamares" "${CHROOT_DIR}/tmp/calamares"
@@ -42,6 +41,13 @@ mount -t proc proc "${CHROOT_DIR}/proc"
 mount -t sysfs sysfs "${CHROOT_DIR}/sys"
 mount -t tmpfs tmpfs "${CHROOT_DIR}/run"
 
+# Hapus symlink bawaan dan set DNS publik setelah /run dimount
+rm -f "${CHROOT_DIR}/etc/resolv.conf"
+cat << 'EOF' > "${CHROOT_DIR}/etc/resolv.conf"
+nameserver 1.1.1.1
+nameserver 8.8.8.8
+EOF
+
 echo "[4/6] Menjalankan konfigurasi distro di dalam chroot..."
 chroot "${CHROOT_DIR}" /bin/bash /tmp/chroot-setup.sh
 
@@ -49,14 +55,16 @@ cleanup
 trap - EXIT
 
 echo "[5/6] Menyalin kernel, initrd, dan membuat SquashFS..."
-cp "${CHROOT_DIR}"/boot/vmlinuz-* "${ISO_DIR}/casper/vmlinuz"
-cp "${CHROOT_DIR}"/boot/initrd.img-* "${ISO_DIR}/casper/initrd"
+VMLINUZ_FILE="$(ls -1 "${CHROOT_DIR}"/boot/vmlinuz-* | sort -V | tail -n 1)"
+INITRD_FILE="$(ls -1 "${CHROOT_DIR}"/boot/initrd.img-* | sort -V | tail -n 1)"
+cp "${VMLINUZ_FILE}" "${ISO_DIR}/casper/vmlinuz"
+cp "${INITRD_FILE}" "${ISO_DIR}/casper/initrd"
 
 chroot "${CHROOT_DIR}" dpkg-query -W --showformat='${Package} ${Version}\n' > "${ISO_DIR}/casper/filesystem.manifest"
 printf "%s" "$(du -sx --block-size=1 "${CHROOT_DIR}" | cut -f1)" > "${ISO_DIR}/casper/filesystem.size"
 
 mksquashfs "${CHROOT_DIR}" "${ISO_DIR}/casper/filesystem.squashfs" \
-  -comp zstd -Xcompression-level 15
+  -comp zstd -Xcompression-level 12
 
 echo "[6/6] Membuat ISO Hybrid (BIOS + UEFI)..."
 cp "${ROOT_DIR}/config/grub.cfg" "${ISO_DIR}/boot/grub/grub.cfg"
