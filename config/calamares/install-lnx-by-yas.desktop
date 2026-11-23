@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Install LNX by YAS
+GenericName=System Installer
+Comment=Install LNX by YAS secara permanen ke SSD atau Hardisk
+Exec=sudo -E calamares
+Icon=system-software-install
+Terminal=false
+StartupNotify=true
+Categories=System;

@@ -1,0 +1,32 @@
+---
+componentName: lnx-by-yas
+welcomeStyleCalamares: false
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 850px,560px
+windowPlacement: center
+
+strings:
+  productName:         "LNX by YAS"
+  shortProductName:    "LNX by YAS"
+  version:             "1.0"
+  shortVersion:        "1.0"
+  versionedName:       "LNX by YAS 1.0"
+  shortVersionedName:  "LNX by YAS 1.0"
+  bootloaderEntryName: "LNX by YAS"
+  productUrl:          "https://github.com/"
+  supportUrl:          "https://github.com/"
+
+images:
+  productLogo:         "logo.svg"
+  productIcon:         "logo.svg"
+  productWelcome:      "logo.svg"
+
+slideshow:             "show.qml"
+slideshowAPI:          2
+
+style:
+  SidebarBackground:        "#181825"
+  SidebarText:              "#cdd6f4"
+  SidebarTextCurrent:       "#ffffff"
+  SidebarBackgroundCurrent: "#0078d4"
