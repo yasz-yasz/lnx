@@ -1,0 +1,50 @@
+name: Build LNX by YAS ISO
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Versi rilis distro (contoh: 1.0)'
+        required: true
+        default: '1.0'
+
+permissions:
+  contents: write
+
+jobs:
+  build-iso:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Bebaskan Ruang Disk Runner
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /usr/local/share/boost
+          df -h
+
+      - name: Beri Izin Eksekusi Script
+        run: |
+          chmod +x scripts/build.sh scripts/chroot-setup.sh config/win11-layout.sh
+
+      - name: Build LNX by YAS ISO
+        env:
+          DISTRO_VERSION: ${{ github.event.inputs.version || '1.0' }}
+        run: sudo -E bash scripts/build.sh
+
+      - name: Buat Checksum SHA256
+        run: sha256sum LNX-by-YAS-*.iso > SHA256SUMS.txt
+
+      - name: Upload ISO ke GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.event.inputs.version || '1.0' }}-build.${{ github.run_number }}
+          name: LNX by YAS v${{ github.event.inputs.version || '1.0' }} (Build ${{ github.run_number }})
+          body: |
+            ### LNX by YAS (Ubuntu 24.04 Minimal + Puppy RAM Mode + Calamares)
+            - **Desktop:** XFCE4 tampilan Windows 11 (Fluent Theme + Win11 Icons + Centered Taskbar)
+            - **Paket:** Dukungan native APT, Snap, dan Flatpak (Flathub)
+            - **Boot Mode:** Live Normal, Full RAM (`toram`), dan Installer Permanen Calamares (BIOS + UEFI)
+          files: |
+            LNX-by-YAS-*.iso
+            SHA256SUMS.txt
