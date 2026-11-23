@@ -15,7 +15,7 @@ EOF
 
 apt-get update
 apt-get install -y --no-install-recommends \
-  linux-generic casper systemd-sysv discover laptop-detect os-prober \
+  linux-generic casper systemd-sysv os-prober \
   network-manager sudo locales curl wget git ca-certificates dbus-x11 \
   xfce4 xfce4-whiskermenu-plugin xfce4-notifyd xfce4-pulseaudio-plugin \
   xfce4-terminal thunar-archive-plugin file-roller \
@@ -32,10 +32,10 @@ locale-gen en_US.UTF-8 id_ID.UTF-8
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # Aktifkan service utama termasuk Snapd
-systemctl enable NetworkManager
-systemctl enable lightdm
-systemctl enable snapd.socket
-systemctl enable snapd.service
+systemctl enable NetworkManager || true
+systemctl enable lightdm || true
+systemctl enable snapd.socket || true
+systemctl enable snapd.service || true
 
 # Pasang Tema Windows 11 (Fluent GTK + Win11 Icon Theme)
 git clone --depth=1 https://github.com/vinceliuice/Fluent-gtk-theme.git /tmp/Fluent-gtk-theme
@@ -47,8 +47,7 @@ git clone --depth=1 https://github.com/yeyushengfan258/Win11-icon-theme.git /tmp
 
 # Instalasi & Konfigurasi Installer Calamares
 apt-get install -y \
-  calamares qml-module-qtquick2 qml-module-qtquick-controls \
-  qml-module-qtquick-layouts qml-module-qtquick-window2 \
+  calamares grub2-common \
   grub-pc-bin grub-efi-amd64-bin grub-efi-amd64-signed shim-signed \
   efibootmgr dosfstools btrfs-progs ntfs-3g mtools
 
@@ -97,7 +96,7 @@ VERSION_ID="1.0"
 VERSION="1.0"
 ID=lnxbyyas
 ID_LIKE=ubuntu
-HOME_URL="https://github.com/"
+HOME_URL="https://github.com/yasz-yasz/lnx"
 EOF
 
 cat << 'EOF' > /etc/lsb-release
