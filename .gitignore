@@ -1,8 +1,0 @@
-*.iso
-*.log
-.build/
-binary/
-cache/
-chroot/
-local/
-release_output/
