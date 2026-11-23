@@ -4,12 +4,17 @@ FLAG_FILE="$HOME/.config/.lnx_win11_applied"
 
 sleep 2
 
+# Terapkan Tema GTK, Ikon, Font, dan Window Manager
 xfconf-query -c xsettings -p /Net/ThemeName -s "Fluent-Dark-compact" --create -t string
 xfconf-query -c xsettings -p /Net/IconThemeName -s "Win11-dark" --create -t string
 xfconf-query -c xsettings -p /Gtk/FontName -s "Inter 10" --create -t string
 xfconf-query -c xfwm4 -p /general/theme -s "Fluent-Dark-compact" --create -t string
 xfconf-query -c xfwm4 -p /general/button_layout -s "O|HMC" --create -t string
 
+# Aktifkan tombol Windows (Super_L) untuk membuka Start Menu (Whisker Menu)
+xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/Super_L" -n -t string -s "xfce4-popup-whiskermenu"
+
+# Konfigurasi Panel Bawah Bergaya Windows 11
 xfconf-query -c xfce4-panel -p /panels -n -a -t int -s 1
 xfconf-query -c xfce4-panel -p /panels/panel-1/position -n -t string -s "p=8;x=0;y=0"
 xfconf-query -c xfce4-panel -p /panels/panel-1/length -n -t double -s 100
