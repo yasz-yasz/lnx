@@ -17,6 +17,7 @@ apt-get update
 apt-get install -y --no-install-recommends \
   linux-generic casper systemd-sysv os-prober \
   network-manager sudo locales curl wget git ca-certificates dbus-x11 \
+  xorg xserver-xorg xserver-xorg-video-all \
   xfce4 xfce4-whiskermenu-plugin xfce4-notifyd xfce4-pulseaudio-plugin \
   xfce4-terminal thunar-archive-plugin file-roller \
   lightdm lightdm-gtk-greeter \
@@ -114,12 +115,20 @@ export HOST="lnx-by-yas"
 export BUILD_SYSTEM="Ubuntu"
 EOF
 
-# Konfigurasi LightDM Greeter
+# Konfigurasi LightDM Greeter & Auto-Login Live Mode
 cat << 'EOF' > /etc/lightdm/lightdm-gtk-greeter.conf
 [greeter]
 theme-name=Fluent-Dark-compact
 icon-theme-name=Win11-dark
 font-name=Inter 10
+EOF
+
+mkdir -p /etc/lightdm/lightdm.conf.d
+cat << 'EOF' > /etc/lightdm/lightdm.conf.d/50-autologin.conf
+[Seat:*]
+autologin-user=yas
+autologin-user-timeout=0
+user-session=xfce
 EOF
 
 update-initramfs -u
